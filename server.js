@@ -6,7 +6,7 @@ const cors = require("cors");
 dotenv.config();
 const app = express();
 
-// ✅ FIXED CORS CONFIG
+// ✅ FIXED CORS (NO app.options — no crash)
 const allowedOrigins = [
   "http://localhost:5173",
   "https://1313kfc0-5173.inc1.devtunnels.ms",
@@ -18,14 +18,11 @@ app.use(cors({
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
-      callback(new Error("Not allowed by CORS"));
+      callback(null, true); // allow all for hackathon
     }
   },
   credentials: true,
 }));
-
-// ✅ handle preflight requests (IMPORTANT)
-app.options("/*", cors());
 
 // 🔹 Middlewares
 app.use(express.json());
