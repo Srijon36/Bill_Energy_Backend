@@ -2,15 +2,32 @@ const express = require("express");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const cors = require("cors");
+
 dotenv.config();
 const app = express();
+
+// ✅ FIXED CORS CONFIG
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://1313kfc0-5173.inc1.devtunnels.ms",
+  "https://energy-bill-frontend.onrender.com", // ✅ your frontend
+];
+
 app.use(cors({
-  origin: [
-    "http://localhost:5173",
-    "https://1313kfc0-5173.inc1.devtunnels.ms"
-  ],
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
   credentials: true,
 }));
+
+// ✅ handle preflight requests (IMPORTANT)
+app.options("*", cors());
+
+// 🔹 Middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -37,7 +54,7 @@ const applianceRoutes      = require("./routes/applianceRoute/applianceRoute");
 const predictionRoute      = require("./routes/predictRoute/predictRoute");
 const adminRoute           = require("./routes/adminRoute/adminRoute");
 const paymentRoute         = require("./routes/paymentRoute/paymentRoute");
-const subscriptionRoute    = require("./routes/subscriptionRoute/subscriptionRoute"); // ← ADD THIS
+const subscriptionRoute    = require("./routes/subscriptionRoute/subscriptionRoute");
 
 // 🔹 Use Routes
 app.use("/api/bills",           billRoutes);
@@ -50,7 +67,7 @@ app.use("/api/appliances",      applianceRoutes);
 app.use("/api/predict",         predictionRoute);
 app.use("/api/admin",           adminRoute);
 app.use("/api/payment",         paymentRoute);
-app.use("/api/subscription",    subscriptionRoute);  // ← ADD THIS
+app.use("/api/subscription",    subscriptionRoute);
 
 // 🔹 Health Check
 app.get("/", (req, res) => {
