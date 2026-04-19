@@ -6,23 +6,18 @@ const cors = require("cors");
 dotenv.config();
 const app = express();
 
-// ✅ FIXED CORS (NO app.options — no crash)
-const allowedOrigins = [
-  "http://localhost:5173",
-  "https://1313kfc0-5173.inc1.devtunnels.ms",
-  "https://energy-bill-frontend.onrender.com", // ✅ your frontend
-];
-
-app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(null, true); // allow all for hackathon
-    }
-  },
+// ✅ CLEAN & CORRECT CORS CONFIG
+const corsOptions = {
+  origin: [
+    "http://localhost:5173",
+    "https://energy-bill-frontend.onrender.com",
+  ],
+  methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true,
-}));
+};
+
+app.use(cors(corsOptions));
+app.options("*", cors(corsOptions)); // ✅ FIXES PREFLIGHT ERROR
 
 // 🔹 Middlewares
 app.use(express.json());
@@ -53,7 +48,7 @@ const adminRoute           = require("./routes/adminRoute/adminRoute");
 const paymentRoute         = require("./routes/paymentRoute/paymentRoute");
 const subscriptionRoute    = require("./routes/subscriptionRoute/subscriptionRoute");
 
-// 🔹 Use Routes
+// 🔹 Use Routes (✅ CORRECT — DO NOT CHANGE)
 app.use("/api/bills",           billRoutes);
 app.use("/api/logins",          loginRoutes);
 app.use("/api/registers",       registerRoutes);
