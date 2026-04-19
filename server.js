@@ -17,7 +17,7 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-app.options("*", cors(corsOptions)); // ✅ FIXES PREFLIGHT ERROR
+app.options("/*", cors(corsOptions));// ✅ FIXES PREFLIGHT ERROR
 
 // 🔹 Middlewares
 app.use(express.json());
