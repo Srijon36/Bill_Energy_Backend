@@ -12,12 +12,10 @@ const corsOptions = {
     "http://localhost:5173",
     "https://energy-bill-frontend.onrender.com",
   ],
-  methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true,
 };
 
 app.use(cors(corsOptions));
-app.options("/*", cors(corsOptions));// ✅ FIXES PREFLIGHT ERROR
 
 // 🔹 Middlewares
 app.use(express.json());
